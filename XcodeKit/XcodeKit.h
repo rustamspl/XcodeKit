@@ -29,6 +29,6 @@ static XcodeKit *sharedPlugin;
 
 +(instancetype)sharedPlugin;
 -(id)initWithBundle:(NSBundle *)plugin;
--(void)deleteSelection;
+//-(void)deleteSelection;
 -(void)duplicateSelection;
 @end
