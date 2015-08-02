@@ -59,13 +59,18 @@ static XcodeKit *sharedPlugin;
     {
         [[menuItem submenu] addItem:[NSMenuItem separatorItem]];
         
-        NSMenuItem *actionMenuItem = [[NSMenuItem alloc] initWithTitle:@"Delete Selection / Line" action:@selector(deleteSelection) keyEquivalent:@"cmd+E"];
-        [actionMenuItem setTarget:self];
-        [[menuItem submenu] addItem:actionMenuItem];
+//        NSMenuItem *actionMenuItem = [[NSMenuItem alloc] initWithTitle:@"Delete Selection / Line" action:@selector(deleteSelection) keyEquivalent:@"cmd+E"];
+//        [actionMenuItem setTarget:self];
+//        [[menuItem submenu] addItem:actionMenuItem];
         
-        NSMenuItem *actionMenuItem2 = [[NSMenuItem alloc] initWithTitle:@"Duplicate Selection / Line" action:@selector(duplicateSelection) keyEquivalent:@"cmd+d"];
-        [actionMenuItem2 setTarget:self];
-        [[menuItem submenu] addItem:actionMenuItem2];
+        NSMenuItem *actionMenuItem = [[NSMenuItem alloc] initWithTitle:@"Duplicate Selection/Line" action:@selector(duplicateSelection) keyEquivalent:@""];
+        [actionMenuItem setTarget:self];
+       
+        // Set ⌃⌘X as our plugin's keyboard shortcut.
+        [actionMenuItem setKeyEquivalent:@"d"];
+        [actionMenuItem setKeyEquivalentModifierMask: NSCommandKeyMask];
+        
+        [[menuItem submenu] addItem:actionMenuItem];
         
         // tap into notifications
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectionDidChange:) name:NSTextViewDidChangeSelectionNotification object:nil];
@@ -86,12 +91,13 @@ static XcodeKit *sharedPlugin;
 
 -(BOOL)validateMenuItem:(NSMenuItem *)menuItem
 {
-    if([menuItem action] == @selector(deleteSelection))
-    {
-        NSResponder *firstResponder = [[NSApp keyWindow] firstResponder];
-        return ([firstResponder isKindOfClass:NSClassFromString(@"DVTSourceTextView")] && [firstResponder isKindOfClass:[NSTextView class]]);
-    }
-    else if([menuItem action] == @selector(duplicateSelection))
+//    if([menuItem action] == @selector(deleteSelection))
+//    {
+//        NSResponder *firstResponder = [[NSApp keyWindow] firstResponder];
+//        return ([firstResponder isKindOfClass:NSClassFromString(@"DVTSourceTextView")] && [firstResponder isKindOfClass:[NSTextView class]]);
+//    }
+//    else
+    if([menuItem action] == @selector(duplicateSelection))
     {
         NSResponder *firstResponder = [[NSApp keyWindow] firstResponder];
         return ([firstResponder isKindOfClass:NSClassFromString(@"DVTSourceTextView")] && [firstResponder isKindOfClass:[NSTextView class]]);
@@ -121,29 +127,29 @@ static XcodeKit *sharedPlugin;
         }
     }
 }
-
--(void)deleteSelection
-{
-    if(codeEditor)
-    {
-        if(currentSelection && [currentSelection isNotEqualTo:@""]){
-            [codeEditor insertText:@"" replacementRange:currentRange];
-        }
-        else {
-            NSRange targetRange = currentLineRange;
-            
-            //NSRange range = NSMakeRange(currentLineRange.location + currentLineRange.length, 0);
-            //[codeEditor setSelectedRange:range];
-            
-            @try {
-                [codeEditor insertText:@"" replacementRange:NSMakeRange(targetRange.location-1, targetRange.length)];
-            }
-            @catch (NSException *exception) {
-                [codeEditor insertText:@"" replacementRange:NSMakeRange(targetRange.location, targetRange.length)];
-            }
-        }
-    }
-}
+//
+//-(void)deleteSelection
+//{
+//    if(codeEditor)
+//    {
+//        if(currentSelection && [currentSelection isNotEqualTo:@""]){
+//            [codeEditor insertText:@"" replacementRange:currentRange];
+//        }
+//        else {
+//            NSRange targetRange = currentLineRange;
+//            
+//            //NSRange range = NSMakeRange(currentLineRange.location + currentLineRange.length, 0);
+//            //[codeEditor setSelectedRange:range];
+//            
+//            @try {
+//                [codeEditor insertText:@"" replacementRange:NSMakeRange(targetRange.location-1, targetRange.length)];
+//            }
+//            @catch (NSException *exception) {
+//                [codeEditor insertText:@"" replacementRange:NSMakeRange(targetRange.location, targetRange.length)];
+//            }
+//        }
+//    }
+//}
 
 -(void)duplicateSelection
 {
